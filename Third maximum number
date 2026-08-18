@@ -1,0 +1,36 @@
+#include <limits.h>
+
+int thirdMax(int* nums, int numsSize) {
+    // Use long long to prevent out-of-bounds or confusion with INT_MIN
+    long long first = LLONG_MIN;
+    long long second = LLONG_MIN;
+    long long third = LLONG_MIN;
+
+    for (int i = 0; i < numsSize; i++) {
+        long long current = nums[i];
+
+        // Skip duplicate values to focus only on distinct maximums
+        if (current == first || current == second || current == third) {
+            continue;
+        }
+
+        // Update tracking variables by shifting values down
+        if (current > first) {
+            third = second;
+            second = first;
+            first = current;
+        } else if (current > second) {
+            third = second;
+            second = current;
+        } else if (current > third) {
+            third = current;
+        }
+    }
+
+    // If a distinct third maximum doesn't exist, return the global maximum
+    if (third == LLONG_MIN) {
+        return (int)first;
+    }
+    
+    return (int)third;
+}
