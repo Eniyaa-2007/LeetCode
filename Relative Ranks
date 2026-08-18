@@ -1,0 +1,57 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Structure to couple each athlete's score with their initial index
+typedef struct {
+    int val;
+    int index;
+} Athlete;
+
+// Comparator function to sort athletes by score in descending order
+int compare(const void *a, const void *b) {
+    return ((Athlete*)b)->val - ((Athlete*)a)->val;
+}
+
+/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
+char** findRelativeRanks(int* score, int scoreSize, int* returnSize) {
+    *returnSize = scoreSize;
+    
+    // Allocate the array of strings for the final results
+    char** result = (char**)malloc(scoreSize * sizeof(char*));
+    
+    // Allocate and populate a structure array to track original indices
+    Athlete* athletes = (Athlete*)malloc(scoreSize * sizeof(Athlete));
+    for (int i = 0; i < scoreSize; i++) {
+        athletes[i].val = score[i];
+        athletes[i].index = i;
+    }
+    
+    // Sort the structure array descending by score value
+    qsort(athletes, scoreSize, sizeof(Athlete), compare);
+    
+    // Assign corresponding medals and rank numbers to original indexes
+    for (int rank = 0; rank < scoreSize; rank++) {
+        int originalIdx = athletes[rank].index;
+        
+        if (rank == 0) {
+            result[originalIdx] = strdup("Gold Medal");
+        } else if (rank == 1) {
+            result[originalIdx] = strdup("Silver Medal");
+        } else if (rank == 2) {
+            result[originalIdx] = strdup("Bronze Medal");
+        } else {
+            // Maximum digits for scoreSize (10000) + null terminator is ~6-7 bytes
+            char rankStr[12];
+            sprintf(rankStr, "%d", rank + 1);
+            result[originalIdx] = strdup(rankStr);
+        }
+    }
+    
+    // Free the temporary mapping structure array
+    free(athletes);
+    
+    return result;
+}
