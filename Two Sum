@@ -1,0 +1,30 @@
+#include <stdlib.h>
+
+/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
+int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
+    // 1. Allocate memory for the 2-element output array
+    int* result = (int*)malloc(2 * sizeof(int));
+    if (result == NULL) {
+        *returnSize = 0;
+        return NULL;
+    }
+
+    // 2. Use nested loops to check every pair of numbers
+    for (int i = 0; i < numsSize - 1; i++) {
+        for (int j = i + 1; j < numsSize; j++) {
+            if (nums[i] + nums[j] == target) {
+                result[0] = i;
+                result[1] = j;
+                *returnSize = 2; // Notify LeetCode that 2 elements are returned
+                return result;
+            }
+        }
+    }
+
+    // 3. If no solution is found (though the problem guarantees one exists)
+    *returnSize = 0;
+    free(result);
+    return NULL;
+}
