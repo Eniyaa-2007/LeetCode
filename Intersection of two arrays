@@ -1,0 +1,32 @@
+#include <stdlib.h>
+#include <string.h>
+
+/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
+int* intersection(int* nums1, int nums1Size, int* nums2, int nums2Size, int* returnSize) {
+    // Lookup array to track existence of elements (constraints: 0 <= nums[i] <= 1000)
+    int lookup[1001] = {0};
+    
+    // Determine maximum possible size for the intersection array
+    int minSize = (nums1Size < nums2Size) ? nums1Size : nums2Size;
+    int* result = (int*)malloc(minSize * sizeof(int));
+    *returnSize = 0;
+    
+    // Mark elements present in the first array
+    for (int i = 0; i < nums1Size; i++) {
+        lookup[nums1[i]] = 1;
+    }
+    
+    // Find intersection elements and ensure uniqueness
+    for (int i = 0; i < nums2Size; i++) {
+        if (lookup[nums2[i]] == 1) {
+            result[*returnSize] = nums2[i];
+            (*returnSize)++;
+            // Mark as 2 to prevent duplicate entries in the result
+            lookup[nums2[i]] = 2; 
+        }
+    }
+    
+    return result;
+}
